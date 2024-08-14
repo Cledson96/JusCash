@@ -1,8 +1,11 @@
-import { BackgroundAuth } from "../components";
+import { BackgroundAuth, Card, AuthContainer } from "../components";
+
 export default function Auth() {
   return (
     <BackgroundAuth>
-      <div>Auth</div>
+      <Card>
+        <AuthContainer />
+      </Card>
     </BackgroundAuth>
   );
 }

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Teste from "./views/Test";
 import Auth from "./views/Auth";
 import "./styles/reset.css";
+import "./styles/style.css";
 export default function App() {
   return (
     <BrowserRouter>
