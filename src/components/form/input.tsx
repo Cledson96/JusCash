@@ -7,10 +7,11 @@ interface InputFieldProps {
   label: string;
   type: "text" | "email" | "password";
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  pattern?: string;
+  title?: string;
 }
-
 export function InputField({
   id,
   label,
@@ -18,6 +19,8 @@ export function InputField({
   value,
   onChange,
   required = false,
+  pattern,
+  title,
 }: InputFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,6 +37,9 @@ export function InputField({
             type={showPassword ? "text" : "password"}
             value={value}
             onChange={onChange}
+            required={required}
+            pattern={pattern}
+            title={title}
           />
           <IconWrapper onClick={togglePasswordVisibility}>
             {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -48,6 +54,8 @@ export function InputField({
           value={value}
           onChange={onChange}
           required={required}
+          pattern={pattern}
+          title={title}
         />
       );
     }
@@ -62,6 +70,7 @@ export function InputField({
     </FormGroup>
   );
 }
+
 const FormGroup = styled.div`
   position: relative;
   margin-bottom: 15px;

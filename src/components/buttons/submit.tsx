@@ -16,7 +16,7 @@ export function Submit({ text, type = "submit", onClick }: SubmitProps) {
 
 const SubmitButton = styled.button`
   padding: 10px 20px;
-  width: min-content;
+  width: fit-content;
   font-size: 16px;
   font-weight: 500;
   background-color: #28e056;

@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { InputField, Form, Link, Submit } from "../../components";
 
-export function SignIn() {
-  const [formData, setFormData] = useState({ email: "", senha: "" });
+interface SignInProps {
+  alterSignIn: () => void;
+}
+
+export function SignIn({ alterSignIn }: SignInProps) {
+  const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -29,18 +33,15 @@ export function SignIn() {
         required
       />
       <InputField
-        id="senha"
+        id="password"
         label="Senha"
         type="password"
-        value={formData.senha}
+        value={formData.password}
         onChange={handleChange}
         required
       />
       <TextEnd>
-        <Link
-          text="Não tem uma conta? Cadastre-se."
-          onClick={() => console.log("Forgot password")}
-        />
+        <Link text="Não tem uma conta? Cadastre-se." onClick={alterSignIn} />
       </TextEnd>
       <ButtonCenter>
         <Submit type="submit" text="Entrar" />

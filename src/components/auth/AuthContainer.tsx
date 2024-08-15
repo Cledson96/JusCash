@@ -5,10 +5,15 @@ import { SignIn } from "./signIn";
 import { SignUp } from "./signUp";
 export function AuthContainer() {
   const [isSignIn, setIsSignIn] = useState(true);
+  const alterSignIn = () => setIsSignIn(!isSignIn);
   return (
     <>
       <StyledLogo src={logo} alt="Logo" />
-      {isSignIn ? <SignIn /> : <SignUp />}
+      {isSignIn ? (
+        <SignIn alterSignIn={alterSignIn} />
+      ) : (
+        <SignUp alterSignIn={alterSignIn} />
+      )}
     </>
   );
 }
