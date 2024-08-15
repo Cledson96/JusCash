@@ -5,13 +5,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 interface InputFieldProps {
   id: string;
   label: string;
-  type: "text" | "email" | "password";
+  type: "text" | "email" | "password" | "tel";
   value: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   pattern?: string;
   title?: string;
 }
+
 export function InputField({
   id,
   label,
@@ -28,36 +29,81 @@ export function InputField({
     setShowPassword(!showPassword);
   };
 
+  const handleTelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "");
+    const formattedValue = rawValue.replace(
+      /^(\d{2})(\d{5})(\d{4})$/,
+      "($1) $2-$3"
+    );
+    if (onChange) {
+      e.target.value = formattedValue;
+      onChange(e);
+    }
+  };
+
   const renderInput = () => {
-    if (type === "password") {
-      return (
-        <div>
+    switch (type) {
+      case "password":
+        pattern =
+          pattern ||
+          "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$";
+        title =
+          title ||
+          "A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico.";
+        return (
+          <div style={{ position: "relative" }}>
+            <Input
+              id={id}
+              type={showPassword ? "text" : "password"}
+              value={value}
+              onChange={onChange}
+              required={required}
+              pattern={pattern}
+              title={title}
+            />
+            <IconWrapper onClick={togglePasswordVisibility}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </IconWrapper>
+          </div>
+        );
+
+      case "email":
+        return (
           <Input
             id={id}
-            type={showPassword ? "text" : "password"}
+            type={type}
             value={value}
             onChange={onChange}
             required={required}
             pattern={pattern}
             title={title}
           />
-          <IconWrapper onClick={togglePasswordVisibility}>
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </IconWrapper>
-        </div>
-      );
-    } else {
-      return (
-        <Input
-          id={id}
-          type={type}
-          value={value}
-          onChange={onChange}
-          required={required}
-          pattern={pattern}
-          title={title}
-        />
-      );
+        );
+
+      case "tel":
+        return (
+          <Input
+            id={id}
+            type={type}
+            value={value}
+            onChange={handleTelChange}
+            required={required}
+            placeholder="(99) 99999-9999"
+          />
+        );
+
+      default:
+        return (
+          <Input
+            id={id}
+            type={type}
+            value={value}
+            onChange={onChange}
+            required={required}
+            pattern={pattern}
+            title={title}
+          />
+        );
     }
   };
 
