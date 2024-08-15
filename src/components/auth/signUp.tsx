@@ -52,8 +52,8 @@ export function SignUp({ alterSignIn }: SignInProps) {
         value={formData.password}
         onChange={handleChange}
         required
-        pattern="(?=.*[!@#$%^&*])(?=.{8,})"
-        title="A senha deve ter no mínimo 8 caracteres e conter pelo menos um caractere especial (!@#$%^&*)."
+        pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+        title="A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico."
       />
       <InputField
         id="confirmPassword"
@@ -62,8 +62,8 @@ export function SignUp({ alterSignIn }: SignInProps) {
         value={formData.confirmPassword}
         onChange={handleChange}
         required
-        pattern="(?=.*[!@#$%^&*])(?=.{8,})"
-        title="A senha deve ter no mínimo 8 caracteres e conter pelo menos um caractere especial (!@#$%^&*)."
+        pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+        title="A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico."
       />
       <TextEnd>
         <Link
