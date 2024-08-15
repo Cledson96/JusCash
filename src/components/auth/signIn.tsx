@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { InputField, Form, Link } from "../../components";
+import { InputField, Form, Link, Submit } from "../../components";
 
 export function SignIn() {
   const [formData, setFormData] = useState({ email: "", senha: "" });
@@ -42,7 +42,9 @@ export function SignIn() {
           onClick={() => console.log("Forgot password")}
         />
       </TextEnd>
-      <SubmitButton type="submit">Sign In</SubmitButton>
+      <ButtonCenter>
+        <Submit type="submit" text="Entrar" />
+      </ButtonCenter>
     </Form>
   );
 }
@@ -51,18 +53,12 @@ const TextEnd = styled.div`
   display: flex;
   width: 100%;
   justify-content: flex-end;
+  margin-bottom: 25px;
+  margin-top: 10px;
 `;
 
-const SubmitButton = styled.button`
-  padding: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
+const ButtonCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;
