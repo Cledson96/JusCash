@@ -77,7 +77,6 @@ export function TableLeads({ refresh, refreshLeads }: TableLeadsProps) {
 
   const handleLeadClick = (lead: Lead) => {
     setLeadSelected(lead);
-    console.log(lead);
     openModal();
   };
 

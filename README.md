@@ -1,46 +1,62 @@
-# Getting Started with Create React App
+# jus-cash - Gerenciamento de Leads
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descrição
 
-## Available Scripts
+Este projeto é uma aplicação de gerenciamento de Leads desenvolvida utilizando React. A aplicação permite que os usuários registrem novos Leads, atualizem seus status e visualizem detalhes específicos de cada Lead. O projeto segue uma arquitetura modular, dividida em Views, Controllers, Services e uma camada de API simulada com localStorage.
 
-In the project directory, you can run:
+## Estrutura do Projeto
 
-### `npm start`
+- **src/**: Contém todo o código-fonte do projeto.
+  - **api/**: Simulação de uma API usando localStorage.
+  - **components/**: Componentes reutilizáveis da interface do usuário.
+  - **controllers/**: Lógica de controle que gerencia as interações entre as views e os serviços.
+  - **services/**: Lógica de negócios e persistência de dados.
+  - **views/**: Páginas principais da aplicação (e.g., Autenticação, Home).
+  - **img/**: Imagens utilizadas na aplicação.
+  - **styles/**: Estilos globais do projeto.
+  - **App.tsx**: Componente principal que gerencia as rotas.
+  - **index.tsx**: Ponto de entrada do React.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Requisitos
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Node.js** versão 14 ou superior
+- **npm** ou **yarn** como gerenciador de pacotes
 
-### `npm test`
+## Instalação
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone o repositório para sua máquina local:
 
-### `npm run build`
+   git clone https://github.com/Cledson96/JusCash.git
+   cd nome-do-repositorio
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2.Instale as dependências necessárias:
+npm install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Executando o projeto
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Inicie o servidor de desenvolvimento:
+   npm start
 
-### `npm run eject`
+2. Abra o navegador e acesse:
+   http://localhost:3000
+   A aplicação estará rodando localmente.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Estrutura da aplicação
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1.Autenticação:
+Permite que usuários se registrem e façam login. As credenciais são gerenciadas localmente usando bcrypt e localStorage.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2.Gerenciamento de Leads:
+Após o login, os usuários podem criar novos Leads, mover os Leads entre diferentes status (Cliente Potencial, Dados Confirmados, Análise do Lead) e visualizar detalhes específicos de cada Lead.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Persistência de dados
 
-## Learn More
+    A persistência de dados é feita utilizando o localStorage. A "API" do projeto simula operações de CRUD, armazenando e recuperando dados diretamente do localStorage.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Considerações finais
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    Este projeto foi desenvolvido como parte de um desafio técnico. Ele demonstra o uso de React em conjunto com boas práticas de arquitetura, manipulação de estado e persistência de dados. O projeto é facilmente escalável e pode ser estendido para incluir novas funcionalidades ou integração com APIs reais.
+
+Autor: Cledson Santos Souza
+Linkedin:https://www.linkedin.com/in/cledson-santos/
+Email: cledson1996@gmail.com

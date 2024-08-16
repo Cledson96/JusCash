@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Teste from "./views/Test";
+
 import Auth from "./views/Auth";
 import Home from "./views/Home";
 import { PrivateRoute } from "./components";
@@ -25,7 +25,6 @@ export default function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route path="/teste" element={<Teste />} />
           <Route path="/" element={<Auth />} />
           <Route
             path="/home"
