@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { InputField, Form, Link, Submit } from "../../components";
+import AuthController from "../../controllers/auth";
+import { toast } from "react-toastify";
 
 interface SignInProps {
   alterSignIn: () => void;
@@ -8,6 +11,12 @@ interface SignInProps {
 
 export function SignIn({ alterSignIn }: SignInProps) {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const resetForm = () => {
+    setFormData({ email: "", password: "" });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -17,9 +26,27 @@ export function SignIn({ alterSignIn }: SignInProps) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+
+    setLoading(true);
+
+    const response = await AuthController.login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (!response.success) {
+      toast.error(response.message);
+      setLoading(false);
+      return;
+    }
+
+    toast.success(response.message);
+    resetForm();
+    setLoading(false);
+
+    navigate("/home");
   };
 
   return (
@@ -44,7 +71,7 @@ export function SignIn({ alterSignIn }: SignInProps) {
         <Link text="Não tem uma conta? Cadastre-se." onClick={alterSignIn} />
       </TextEnd>
       <ButtonCenter>
-        <Submit type="submit" text="Entrar" />
+        <Submit type="submit" text="Entrar" loading={loading} />
       </ButtonCenter>
     </Form>
   );
