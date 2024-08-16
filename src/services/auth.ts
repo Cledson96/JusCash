@@ -1,6 +1,5 @@
 import APIConnector from "../api/db";
 import bcrypt from "bcryptjs";
-import { v4 as uuidv4 } from "uuid";
 
 const SECRET_KEY = "12345";
 const TOKEN_EXPIRATION = 24 * 60 * 60 * 1000;
@@ -9,6 +8,12 @@ interface AuthResponse {
   success: boolean;
   message: string;
   data?: any;
+}
+
+interface TokenData {
+  storedUserId: string;
+  storedExpiration: string;
+  expirationTime: number;
 }
 
 interface AuthService {
@@ -20,6 +25,7 @@ interface AuthService {
   login: (email: string, password: string) => Promise<AuthResponse>;
   isAuthenticated: () => Promise<boolean>;
   logout: () => void;
+  decodeToken: () => TokenData | null;
 }
 
 const AuthService: AuthService = {
@@ -40,17 +46,17 @@ const AuthService: AuthService = {
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const newUser = {
-      id: uuidv4(),
       name,
       email,
       password: hashedPassword,
+      leads: [],
     };
 
     await APIConnector.addUser(newUser);
     return {
       success: true,
       message: "Usuário cadastrado com sucesso.",
-      data: { userId: newUser.id },
+      data: "",
     };
   },
 
@@ -89,38 +95,57 @@ const AuthService: AuthService = {
   },
 
   isAuthenticated: async (): Promise<boolean> => {
-    const tokenData = localStorage.getItem("auth_token");
-
-    if (!tokenData) {
+    const decodedToken = AuthService.decodeToken();
+    if (!decodedToken) {
       return false;
     }
 
-    const { token, expirationTime } = JSON.parse(tokenData);
+    const { storedUserId } = decodedToken;
 
-    if (Date.now() > expirationTime) {
+    const user = await APIConnector.getUserById(storedUserId);
+    if (!user) {
       localStorage.removeItem("auth_token");
       return false;
     }
 
+    return true;
+  },
+
+  logout: (): void => {
+    localStorage.removeItem("auth_token");
+  },
+
+  decodeToken: (): TokenData | null => {
     try {
+      const tokenData = localStorage.getItem("auth_token");
+
+      if (!tokenData) {
+        return null;
+      }
+
+      const { token, expirationTime } = JSON.parse(tokenData);
+
+      if (Date.now() > expirationTime) {
+        localStorage.removeItem("auth_token");
+        return null;
+      }
+
       const decodedToken = atob(token);
       const [storedUserId, storedExpiration, secretKey] =
         decodedToken.split(":");
 
       if (secretKey !== SECRET_KEY) {
-        localStorage.removeItem("auth_token");
-        return false;
+        return null;
       }
 
-      return true;
+      return {
+        storedUserId,
+        storedExpiration,
+        expirationTime,
+      };
     } catch (error) {
-      localStorage.removeItem("auth_token");
-      return false;
+      return null;
     }
-  },
-
-  logout: (): void => {
-    localStorage.removeItem("auth_token");
   },
 };
 

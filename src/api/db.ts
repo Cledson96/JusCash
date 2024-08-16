@@ -1,19 +1,28 @@
+import { v4 as uuidv4 } from "uuid";
+
+interface Opportunity {
+  name: string;
+  checked: boolean;
+}
+interface Lead {
+  id: string;
+  name: string;
+  email: string;
+  tel: string;
+  status: "potential" | "confirmed" | "analysis";
+  opportunities: Opportunity[];
+}
+
 interface User {
   id: string;
   name: string;
   email: string;
   password: string;
-}
-
-interface Lead {
-  id: string;
-  name: string;
-  email: string;
+  leads: Lead[];
 }
 
 interface Database {
   users: User[];
-  leads: Lead[];
 }
 
 const LOCAL_STORAGE_KEY = "DB_JusCash";
@@ -24,7 +33,6 @@ const APIConnector = {
     if (!db) {
       const initialDB: Database = {
         users: [],
-        leads: [],
       };
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initialDB));
     }
@@ -32,16 +40,17 @@ const APIConnector = {
 
   getDatabase: async (): Promise<Database> => {
     const db = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return db ? JSON.parse(db) : { users: [], leads: [] };
+    return db ? JSON.parse(db) : { users: [] };
   },
 
   saveDatabase: async (db: Database): Promise<void> => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(db));
   },
 
-  addUser: async (user: User): Promise<void> => {
+  addUser: async (user: Omit<User, "id">): Promise<void> => {
     const db = await APIConnector.getDatabase();
-    db.users.push(user);
+    const newUser = { ...user, id: uuidv4() };
+    db.users.push(newUser);
     await APIConnector.saveDatabase(db);
   },
 
@@ -49,28 +58,42 @@ const APIConnector = {
     const db = await APIConnector.getDatabase();
     return db.users.find((user) => user.email === email);
   },
-
+  getUserById: async (id: string): Promise<User | undefined> => {
+    const db = await APIConnector.getDatabase();
+    return db.users.find((user) => user.id === id);
+  },
   removeUser: async (userId: string): Promise<void> => {
     const db = await APIConnector.getDatabase();
     db.users = db.users.filter((user) => user.id !== userId);
     await APIConnector.saveDatabase(db);
   },
 
-  addLead: async (lead: Lead): Promise<void> => {
+  addLeadToUser: async (
+    userId: string,
+    lead: Omit<Lead, "id">
+  ): Promise<void> => {
     const db = await APIConnector.getDatabase();
-    db.leads.push(lead);
-    await APIConnector.saveDatabase(db);
+    const user = db.users.find((user) => user.id === userId);
+    if (user) {
+      const newLead = { ...lead, id: uuidv4() };
+      user.leads.push(newLead);
+      await APIConnector.saveDatabase(db);
+    }
   },
 
-  getLeads: async (): Promise<Lead[]> => {
+  getLeadsByUserId: async (userId: string): Promise<Lead[]> => {
     const db = await APIConnector.getDatabase();
-    return db.leads;
+    const user = db.users.find((user) => user.id === userId);
+    return user ? user.leads : [];
   },
 
-  removeLead: async (leadId: string): Promise<void> => {
+  removeLeadFromUser: async (userId: string, leadId: string): Promise<void> => {
     const db = await APIConnector.getDatabase();
-    db.leads = db.leads.filter((lead) => lead.id !== leadId);
-    await APIConnector.saveDatabase(db);
+    const user = db.users.find((user) => user.id === userId);
+    if (user) {
+      user.leads = user.leads.filter((lead) => lead.id !== leadId);
+      await APIConnector.saveDatabase(db);
+    }
   },
 };
 
