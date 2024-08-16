@@ -58,14 +58,10 @@ const APIConnector = {
     const db = await APIConnector.getDatabase();
     return db.users.find((user) => user.email === email);
   },
+
   getUserById: async (id: string): Promise<User | undefined> => {
     const db = await APIConnector.getDatabase();
     return db.users.find((user) => user.id === id);
-  },
-  removeUser: async (userId: string): Promise<void> => {
-    const db = await APIConnector.getDatabase();
-    db.users = db.users.filter((user) => user.id !== userId);
-    await APIConnector.saveDatabase(db);
   },
 
   addLeadToUser: async (
@@ -81,18 +77,15 @@ const APIConnector = {
     }
   },
 
-  getLeadsByUserId: async (userId: string): Promise<Lead[]> => {
-    const db = await APIConnector.getDatabase();
-    const user = db.users.find((user) => user.id === userId);
-    return user ? user.leads : [];
-  },
-
-  removeLeadFromUser: async (userId: string, leadId: string): Promise<void> => {
+  updateLeadForUser: async (userId: string, lead: Lead): Promise<void> => {
     const db = await APIConnector.getDatabase();
     const user = db.users.find((user) => user.id === userId);
     if (user) {
-      user.leads = user.leads.filter((lead) => lead.id !== leadId);
-      await APIConnector.saveDatabase(db);
+      const leadIndex = user.leads.findIndex((l) => l.id === lead.id);
+      if (leadIndex !== -1) {
+        user.leads[leadIndex] = lead;
+        await APIConnector.saveDatabase(db);
+      }
     }
   },
 };

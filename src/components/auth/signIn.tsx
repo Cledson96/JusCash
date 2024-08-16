@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { InputField, Form, Link, Submit } from "../../components";
+import { InputField, Form, Link, Button } from "../../components";
 import AuthController from "../../controllers/auth";
 import { toast } from "react-toastify";
 
@@ -71,7 +71,7 @@ export function SignIn({ alterSignIn }: SignInProps) {
         <Link text="Não tem uma conta? Cadastre-se." onClick={alterSignIn} />
       </TextEnd>
       <ButtonCenter>
-        <Submit type="submit" text="Entrar" loading={loading} />
+        <Button type="submit" text="Entrar" loading={loading} />
       </ButtonCenter>
     </Form>
   );

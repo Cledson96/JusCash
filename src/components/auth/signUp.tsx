@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { InputField, Form, Link, Submit } from "../../components";
+import { InputField, Form, Link, Button } from "../../components";
 import AuthController from "../../controllers/auth";
 import { toast } from "react-toastify";
 interface SignInProps {
@@ -101,7 +101,7 @@ export function SignUp({ alterSignIn }: SignInProps) {
         />
       </TextEnd>
       <ButtonCenter>
-        <Submit type="submit" text="Criar conta" loading={loading} />
+        <Button type="submit" text="Criar conta" loading={loading} />
       </ButtonCenter>
     </Form>
   );

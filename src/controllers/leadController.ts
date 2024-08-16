@@ -4,12 +4,19 @@ interface Opportunity {
   name: string;
   checked: boolean;
 }
-
+interface Lead {
+  id: string;
+  name: string;
+  email: string;
+  tel: string;
+  status: "potential" | "confirmed" | "analysis";
+  opportunities: Opportunity[];
+}
 interface LeadsController {
   getLeads: () => Promise<{
     success: boolean;
     message: string;
-    data?: any;
+    data?: Lead[];
   }>;
   addLead: (req: {
     name: string;

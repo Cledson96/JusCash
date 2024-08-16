@@ -75,7 +75,15 @@ export function InputField({
           "A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico.";
         return (
           <div style={{ position: "relative" }}>
-            <Input {...commonProps} type={showPassword ? "text" : "password"} />
+            <Input
+              id={id}
+              type={showPassword ? "text" : "password"}
+              value={value}
+              onChange={onChange}
+              required={required}
+              pattern={pattern}
+              title={title}
+            />
             <IconWrapper onClick={togglePasswordVisibility}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </IconWrapper>
