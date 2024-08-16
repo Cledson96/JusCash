@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import LeadController from "../../controllers/leadController";
 import { ModalLead } from "../../components";
@@ -27,23 +27,25 @@ export function TableLeads({ refresh, refreshLeads }: TableLeadsProps) {
   const [leadSelected, setLeadSelected] = useState<Lead | undefined>();
   const [isOpen, setIsOpen] = useState(false);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     setIsOpen(true);
-  };
+  }, []);
 
   useEffect(() => {
     const getLeads = async () => {
-      const response = await LeadController.getLeads();
-      if (response.success) {
-        setLeads(response.data || []);
+      if (leads.length === 0 || refresh) {
+        const response = await LeadController.getLeads();
+        if (response.success) {
+          setLeads(response.data || []);
+        }
       }
     };
     getLeads();
-  }, [refresh]);
+  }, [refresh, leads.length]);
 
   const handleDrop = async (
     e: React.DragEvent<HTMLTableCellElement>,
@@ -75,10 +77,13 @@ export function TableLeads({ refresh, refreshLeads }: TableLeadsProps) {
     e.dataTransfer.setData("text/plain", leadId);
   };
 
-  const handleLeadClick = (lead: Lead) => {
-    setLeadSelected(lead);
-    openModal();
-  };
+  const handleLeadClick = useCallback(
+    (lead: Lead) => {
+      setLeadSelected(lead);
+      openModal();
+    },
+    [openModal]
+  );
 
   const renderRows = () => {
     return leads.map((lead, index) => (

@@ -52,11 +52,11 @@ const StyledButton = styled.button<{ color: "success" | "primary" | "clean" }>`
   ${(props) =>
     props.color === "success" &&
     css`
-      background-color: #28e056;
+      background-color: #23a343;
       color: white;
       padding: 10px 20px;
       &:hover {
-        background-color: #00ff37;
+        background-color: #169231;
       }
     `}
 

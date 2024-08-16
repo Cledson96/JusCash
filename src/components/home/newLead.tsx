@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button, ModalLead } from "../../components";
 import { GoPlus } from "react-icons/go";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface NewLeadProps {
   refreshLeads: () => void;
@@ -10,13 +10,13 @@ interface NewLeadProps {
 export function NewLead({ refreshLeads }: NewLeadProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     setIsOpen(true);
-  };
+  }, []);
 
   return (
     <StyledBackground>
