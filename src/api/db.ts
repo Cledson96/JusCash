@@ -19,7 +19,7 @@ interface Database {
 const LOCAL_STORAGE_KEY = "DB_JusCash";
 
 const APIConnector = {
-  connect: () => {
+  connect: async () => {
     const db = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!db) {
       const initialDB: Database = {
@@ -30,47 +30,47 @@ const APIConnector = {
     }
   },
 
-  getDatabase: (): Database => {
+  getDatabase: async (): Promise<Database> => {
     const db = localStorage.getItem(LOCAL_STORAGE_KEY);
     return db ? JSON.parse(db) : { users: [], leads: [] };
   },
 
-  saveDatabase: (db: Database) => {
+  saveDatabase: async (db: Database): Promise<void> => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(db));
   },
 
-  addUser: (user: User) => {
-    const db = APIConnector.getDatabase();
+  addUser: async (user: User): Promise<void> => {
+    const db = await APIConnector.getDatabase();
     db.users.push(user);
-    APIConnector.saveDatabase(db);
+    await APIConnector.saveDatabase(db);
   },
 
-  getUserByEmail: (email: string): User | undefined => {
-    const db = APIConnector.getDatabase();
+  getUserByEmail: async (email: string): Promise<User | undefined> => {
+    const db = await APIConnector.getDatabase();
     return db.users.find((user) => user.email === email);
   },
 
-  removeUser: (userId: string) => {
-    const db = APIConnector.getDatabase();
+  removeUser: async (userId: string): Promise<void> => {
+    const db = await APIConnector.getDatabase();
     db.users = db.users.filter((user) => user.id !== userId);
-    APIConnector.saveDatabase(db);
+    await APIConnector.saveDatabase(db);
   },
 
-  addLead: (lead: Lead) => {
-    const db = APIConnector.getDatabase();
+  addLead: async (lead: Lead): Promise<void> => {
+    const db = await APIConnector.getDatabase();
     db.leads.push(lead);
-    APIConnector.saveDatabase(db);
+    await APIConnector.saveDatabase(db);
   },
 
-  getLeads: (): Lead[] => {
-    const db = APIConnector.getDatabase();
+  getLeads: async (): Promise<Lead[]> => {
+    const db = await APIConnector.getDatabase();
     return db.leads;
   },
 
-  removeLead: (leadId: string) => {
-    const db = APIConnector.getDatabase();
+  removeLead: async (leadId: string): Promise<void> => {
+    const db = await APIConnector.getDatabase();
     db.leads = db.leads.filter((lead) => lead.id !== leadId);
-    APIConnector.saveDatabase(db);
+    await APIConnector.saveDatabase(db);
   },
 };
 
