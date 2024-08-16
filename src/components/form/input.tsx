@@ -11,6 +11,8 @@ interface InputFieldProps {
   required?: boolean;
   pattern?: string;
   title?: string;
+  style?: "primary" | "gray";
+  disabled?: boolean;
 }
 
 export function InputField({
@@ -22,6 +24,8 @@ export function InputField({
   required = false,
   pattern,
   title,
+  style = "primary",
+  disabled = false,
 }: InputFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,10 +35,19 @@ export function InputField({
 
   const handleTelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/\D/g, "");
-    const formattedValue = rawValue.replace(
-      /^(\d{2})(\d{5})(\d{4})$/,
-      "($1) $2-$3"
-    );
+    const limitedValue = rawValue.slice(0, 11);
+
+    let formattedValue = limitedValue;
+
+    if (limitedValue.length > 2 && limitedValue.length <= 7) {
+      formattedValue = limitedValue.replace(/^(\d{2})(\d)/, "($1) $2");
+    } else if (limitedValue.length > 7) {
+      formattedValue = limitedValue.replace(
+        /^(\d{2})(\d{5})(\d{0,4})$/,
+        "($1) $2-$3"
+      );
+    }
+
     if (onChange) {
       e.target.value = formattedValue;
       onChange(e);
@@ -42,6 +55,16 @@ export function InputField({
   };
 
   const renderInput = () => {
+    const commonProps = {
+      id,
+      value,
+      onChange: type === "tel" ? handleTelChange : onChange,
+      required,
+      pattern,
+      title,
+      disabled,
+    };
+
     switch (type) {
       case "password":
         pattern =
@@ -52,64 +75,26 @@ export function InputField({
           "A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico.";
         return (
           <div style={{ position: "relative" }}>
-            <Input
-              id={id}
-              type={showPassword ? "text" : "password"}
-              value={value}
-              onChange={onChange}
-              required={required}
-              pattern={pattern}
-              title={title}
-            />
+            <Input {...commonProps} type={showPassword ? "text" : "password"} />
             <IconWrapper onClick={togglePasswordVisibility}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </IconWrapper>
           </div>
         );
 
-      case "email":
-        return (
-          <Input
-            id={id}
-            type={type}
-            value={value}
-            onChange={onChange}
-            required={required}
-            pattern={pattern}
-            title={title}
-          />
-        );
-
       case "tel":
         return (
-          <Input
-            id={id}
-            type={type}
-            value={value}
-            onChange={handleTelChange}
-            required={required}
-            placeholder="(99) 99999-9999"
-          />
+          <Input {...commonProps} type="tel" placeholder="(99) 99999-9999" />
         );
 
       default:
-        return (
-          <Input
-            id={id}
-            type={type}
-            value={value}
-            onChange={onChange}
-            required={required}
-            pattern={pattern}
-            title={title}
-          />
-        );
+        return <Input {...commonProps} type={type} />;
     }
   };
 
   return (
     <FormGroup>
-      <Label htmlFor={id} required={required}>
+      <Label htmlFor={id} required={required} styleType={style}>
         {label}
       </Label>
       {renderInput()}
@@ -123,21 +108,25 @@ const FormGroup = styled.div`
   margin-top: 25px;
 `;
 
-const Label = styled.label<{ required?: boolean }>`
+const Label = styled.label<{
+  required?: boolean;
+  styleType: "primary" | "gray";
+}>`
   position: absolute;
-  top: -20px;
+  top: -22px;
   left: 0;
   font-size: 15px;
-  color: #072854;
+  color: ${({ styleType }) =>
+    styleType === "primary" ? "#072854" : "#808080"};
   font-weight: 600;
 
   &:after {
     content: ${({ required }) => (required ? "' *'" : "''")};
-    color: red;
+    color: ${({ styleType }) => (styleType === "primary" ? "red" : "#808080")};
   }
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ disabled?: boolean }>`
   width: 100%;
   padding: 8px;
   font-size: 15px;
@@ -145,6 +134,9 @@ const Input = styled.input`
   border-radius: 4px;
   padding-right: 10px;
   box-sizing: border-box;
+  background-color: ${({ disabled }) => (disabled ? "#A9A9A9" : "white")};
+  color: ${({ disabled }) => (disabled ? "#000000" : "inherit")};
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
 
   &:focus {
     border-color: #007bff;

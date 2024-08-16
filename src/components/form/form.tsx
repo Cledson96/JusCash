@@ -12,6 +12,5 @@ export function Form({ children, onSubmit }: FormProps) {
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  width: 300px;
-  margin: 0 auto;
+  width: 100%;
 `;
