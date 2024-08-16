@@ -1,5 +1,4 @@
 import APIConnector from "../api/db";
-import jwt from "jwt-simple";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -13,15 +12,23 @@ interface AuthResponse {
 }
 
 interface AuthService {
-  register: (name: string, email: string, password: string) => AuthResponse;
-  login: (email: string, password: string) => AuthResponse;
-  isAuthenticated: () => boolean;
+  register: (
+    name: string,
+    email: string,
+    password: string
+  ) => Promise<AuthResponse>;
+  login: (email: string, password: string) => Promise<AuthResponse>;
+  isAuthenticated: () => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthService: AuthService = {
-  register: (name: string, email: string, password: string): AuthResponse => {
-    const existingUser = APIConnector.getUserByEmail(email);
+  register: async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<AuthResponse> => {
+    const existingUser = await APIConnector.getUserByEmail(email);
 
     if (existingUser) {
       return {
@@ -39,7 +46,7 @@ const AuthService: AuthService = {
       password: hashedPassword,
     };
 
-    APIConnector.addUser(newUser);
+    await APIConnector.addUser(newUser);
     return {
       success: true,
       message: "Usuário cadastrado com sucesso.",
@@ -47,8 +54,8 @@ const AuthService: AuthService = {
     };
   },
 
-  login: (email: string, password: string): AuthResponse => {
-    const user = APIConnector.getUserByEmail(email);
+  login: async (email: string, password: string): Promise<AuthResponse> => {
+    const user = await APIConnector.getUserByEmail(email);
 
     if (!user) {
       return {
@@ -65,13 +72,14 @@ const AuthService: AuthService = {
       };
     }
 
-    const payload = {
-      userId: user.id,
-      exp: Date.now() + TOKEN_EXPIRATION,
-    };
-    const token = jwt.encode(payload, SECRET_KEY);
+    const expirationTime = Date.now() + TOKEN_EXPIRATION;
+    const tokenData = `${user.id}:${expirationTime}`;
+    const token = bcrypt.hashSync(tokenData + SECRET_KEY, 10);
 
-    localStorage.setItem("auth_token", token);
+    localStorage.setItem(
+      "auth_token",
+      JSON.stringify({ token, expirationTime })
+    );
     return {
       success: true,
       message: "Logado com sucesso.",
@@ -79,17 +87,29 @@ const AuthService: AuthService = {
     };
   },
 
-  isAuthenticated: (): boolean => {
-    const token = localStorage.getItem("auth_token");
+  isAuthenticated: async (): Promise<boolean> => {
+    const tokenData = localStorage.getItem("auth_token");
 
-    if (!token) {
+    if (!tokenData) {
+      return false;
+    }
+
+    const { token, expirationTime } = JSON.parse(tokenData);
+
+    if (Date.now() > expirationTime) {
+      localStorage.removeItem("auth_token");
       return false;
     }
 
     try {
-      const decoded = jwt.decode(token, SECRET_KEY);
-
-      if (decoded.exp < Date.now()) {
+      const expectedTokenData = `${
+        JSON.parse(localStorage.getItem("auth_token")!).token
+      }:${expirationTime}`;
+      const isTokenValid = bcrypt.compareSync(
+        expectedTokenData + SECRET_KEY,
+        token
+      );
+      if (!isTokenValid) {
         localStorage.removeItem("auth_token");
         return false;
       }
