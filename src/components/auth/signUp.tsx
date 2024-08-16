@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { InputField, Form, Link, Submit } from "../../components";
-
+import AuthController from "../../controllers/auth";
+import { toast } from "react-toastify";
 interface SignInProps {
   alterSignIn: () => void;
 }
@@ -14,6 +15,16 @@ export function SignUp({ alterSignIn }: SignInProps) {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const resetForm = () => {
+    setFormData({
+      email: "",
+      password: "",
+      name: "",
+      confirmPassword: "",
+    });
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -22,9 +33,31 @@ export function SignUp({ alterSignIn }: SignInProps) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("As senhas não coincidem.");
+      return;
+    }
+    setLoading(true);
+    const response = await AuthController.register({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+    if (!response.success) {
+      toast.error(response.message);
+      setLoading(false);
+      return;
+    }
+    toast.success(response.message);
+    resetForm();
+
+    setTimeout(() => {
+      alterSignIn();
+    }, 2000);
+
+    setLoading(false);
   };
 
   return (
@@ -47,23 +80,19 @@ export function SignUp({ alterSignIn }: SignInProps) {
       />
       <InputField
         id="password"
-        label="Senha"
+        label="Senha:"
         type="password"
         value={formData.password}
         onChange={handleChange}
         required
-        pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
-        title="A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico."
       />
       <InputField
         id="confirmPassword"
-        label="Senha"
+        label="Confirme sua senha:"
         type="password"
         value={formData.confirmPassword}
         onChange={handleChange}
         required
-        pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
-        title="A senha deve possuir ao menos 8 caracteres, contendo ao menos, um caractere especial, um caractere numérico, e um caractere alfanumérico."
       />
       <TextEnd>
         <Link
@@ -72,7 +101,7 @@ export function SignUp({ alterSignIn }: SignInProps) {
         />
       </TextEnd>
       <ButtonCenter>
-        <Submit type="submit" text="Criar conta" />
+        <Submit type="submit" text="Criar conta" loading={loading} />
       </ButtonCenter>
     </Form>
   );
