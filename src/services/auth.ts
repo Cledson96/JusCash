@@ -74,12 +74,13 @@ const AuthService: AuthService = {
 
     const expirationTime = Date.now() + TOKEN_EXPIRATION;
     const tokenData = `${user.id}:${expirationTime}`;
-    const token = bcrypt.hashSync(tokenData + SECRET_KEY, 10);
+    const token = btoa(`${tokenData}:${SECRET_KEY}`);
 
     localStorage.setItem(
       "auth_token",
       JSON.stringify({ token, expirationTime })
     );
+
     return {
       success: true,
       message: "Logado com sucesso.",
@@ -102,14 +103,11 @@ const AuthService: AuthService = {
     }
 
     try {
-      const expectedTokenData = `${
-        JSON.parse(localStorage.getItem("auth_token")!).token
-      }:${expirationTime}`;
-      const isTokenValid = bcrypt.compareSync(
-        expectedTokenData + SECRET_KEY,
-        token
-      );
-      if (!isTokenValid) {
+      const decodedToken = atob(token);
+      const [storedUserId, storedExpiration, secretKey] =
+        decodedToken.split(":");
+
+      if (secretKey !== SECRET_KEY) {
         localStorage.removeItem("auth_token");
         return false;
       }

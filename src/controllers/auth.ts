@@ -15,6 +15,7 @@ interface AuthController {
     message: string;
     data?: any;
   }>;
+  isAuthenticated: () => Promise<{ success: boolean }>;
 }
 
 const AuthController: AuthController = {
@@ -40,6 +41,11 @@ const AuthController: AuthController = {
     }
 
     return { success: true, message: result.message, data: result.data };
+  },
+
+  isAuthenticated: async () => {
+    const isAuth = await AuthService.isAuthenticated();
+    return { success: isAuth };
   },
 };
 
