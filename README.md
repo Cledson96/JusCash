@@ -35,28 +35,35 @@ npm install
 ## Executando o projeto
 
 1. Inicie o servidor de desenvolvimento:
+
    npm start
 
 2. Abra o navegador e acesse:
+
    http://localhost:3000
+
    A aplicação estará rodando localmente.
 
 ## Estrutura da aplicação
 
-1.Autenticação:
+1. Autenticação:
+
 Permite que usuários se registrem e façam login. As credenciais são gerenciadas localmente usando bcrypt e localStorage.
 
-2.Gerenciamento de Leads:
+2. Gerenciamento de Leads:
+
 Após o login, os usuários podem criar novos Leads, mover os Leads entre diferentes status (Cliente Potencial, Dados Confirmados, Análise do Lead) e visualizar detalhes específicos de cada Lead.
 
 ## Persistência de dados
 
-    A persistência de dados é feita utilizando o localStorage. A "API" do projeto simula operações de CRUD, armazenando e recuperando dados diretamente do localStorage.
+A persistência de dados é feita utilizando o localStorage. A "API" do projeto simula operações de CRUD, armazenando e recuperando dados diretamente do localStorage.
 
 ## Considerações finais
 
-    Este projeto foi desenvolvido como parte de um desafio técnico. Ele demonstra o uso de React em conjunto com boas práticas de arquitetura, manipulação de estado e persistência de dados. O projeto é facilmente escalável e pode ser estendido para incluir novas funcionalidades ou integração com APIs reais.
+Este projeto foi desenvolvido como parte de um desafio técnico. Ele demonstra o uso de React em conjunto com boas práticas de arquitetura, manipulação de estado e persistência de dados. O projeto é facilmente escalável e pode ser estendido para incluir novas funcionalidades ou integração com APIs reais.
 
 Autor: Cledson Santos Souza
+
 Linkedin:https://www.linkedin.com/in/cledson-santos/
+
 Email: cledson1996@gmail.com
