@@ -39,9 +39,11 @@ export function NewLead({ refreshLeads }: NewLeadProps) {
 }
 
 const StyledBackground = styled.div`
-  width: 550px;
+  width: 90%;
+  max-width: 550px;
   display: flex;
   justify-content: flex-end;
   background-color: #f0ecec;
   padding: 10px;
+  margin-bottom: 20px;
 `;

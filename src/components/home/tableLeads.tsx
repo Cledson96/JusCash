@@ -62,7 +62,7 @@ export function TableLeads({ refresh, refreshLeads }: TableLeadsProps) {
 
       if (newStatus) {
         const updatedLead = { ...lead, status: newStatus };
-        const response = await LeadController.updateLead(updatedLead);
+        await LeadController.updateLead(updatedLead);
         refreshLeads();
       }
     }
@@ -138,10 +138,14 @@ export function TableLeads({ refresh, refreshLeads }: TableLeadsProps) {
   );
 }
 
-const TableContainer = styled.div``;
+const TableContainer = styled.div`
+  width: 100%;
+  max-width: 570px;
+  overflow-x: auto;
+`;
 
 const Table = styled.table`
-  width: 570px;
+  width: 100%;
   border-collapse: collapse;
   background-color: white;
   border-top: 1px solid #ccc;

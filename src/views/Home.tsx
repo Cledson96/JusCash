@@ -1,6 +1,5 @@
-import styled from "styled-components";
 import { BackgroundHome, NewLead, TableLeads } from "../components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 export default function Home() {
   const [refresh, setRefresh] = useState(false);
 

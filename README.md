@@ -27,6 +27,7 @@ Este projeto é uma aplicação de gerenciamento de Leads desenvolvida utilizand
 1. Clone o repositório para sua máquina local:
 
    git clone https://github.com/Cledson96/JusCash.git
+
    cd nome-do-repositorio
 
 2.Instale as dependências necessárias:

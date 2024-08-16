@@ -9,8 +9,11 @@ export function BackgroundHome({ children }: { children: React.ReactNode }) {
     </StyledBackgroundAuth>
   );
 }
+
 const StyledLogo = styled.img`
-  width: 550px;
+  width: 80%;
+  max-width: 550px;
+  margin-bottom: 20px;
 `;
 
 const StyledBackgroundAuth = styled.div`
@@ -19,4 +22,5 @@ const StyledBackgroundAuth = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  padding: 20px;
 `;
